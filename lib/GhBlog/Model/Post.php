@@ -1,6 +1,6 @@
 <?php
 
-class GhBlog_Post {
+class GhBlog_Model_Post {
 
 	protected $_hash;
 	protected $_rawContent;
@@ -16,7 +16,7 @@ class GhBlog_Post {
 	}
 
 	protected function parse() {
-		
+
 	}
 
 	public function getHash() {

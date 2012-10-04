@@ -19,12 +19,18 @@ class GhBlog_Provider_Github_Api implements GhBlog_Provider {
 	}
 
 	public function getList($path) {
-		return $this->_request('repos/'.$this->_repo.'/contents/'.$path);
+		$list = $this->_request('repos/'.$this->_repo.'/contents/'.$path);
+		foreach ($list as $file) {
+			
+		}
 	}
 
 	public function getContent($path) {
 		$content = $this->_request('repos/'.$this->_repo.'/contents/'.$path);
-		return $content;
+		if($content->encoding == 'base64'){
+			return base64_decode($content->content);
+		}
+		return $content->content;		
 	}
 
 }
