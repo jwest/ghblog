@@ -13,9 +13,10 @@ class GhBlog_Model_Post {
 	public function __construct($hash, $rawContent) {
 		$this->_hash = $hash;
 		$this->_rawContent = $rawContent;
+		$this->_parse();
 	}
 
-	protected function parse() {
+	protected function _parse() {
 
 	}
 
@@ -32,11 +33,11 @@ class GhBlog_Model_Post {
 	}
 
 	public function getTags() {
-
+		return $this->_tags;
 	}
 
 	public function getContent() {
-
+		return $this->_content;
 	}
 
 }

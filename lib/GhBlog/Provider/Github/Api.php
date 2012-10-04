@@ -20,9 +20,9 @@ class GhBlog_Provider_Github_Api implements GhBlog_Provider {
 
 	public function getList($path) {
 		$list = $this->_request('repos/'.$this->_repo.'/contents/'.$path);
-		foreach ($list as $file) {
-			
-		}
+		foreach ($list as $key => $file)
+			$list[$key] = new GhBlog_Model_Provider_File($this, $file->sha, $file->path);
+		return $list;
 	}
 
 	public function getContent($path) {
