@@ -12,9 +12,21 @@ class GhBlog_Model_Provider_File {
 		$this->_ref = $ref;
 	}
 
-	public function getPost() {
-		$content = $this->_provider->getContent($this->_ref);
-		return new GhBlog_Model_Post($this->_hash, $content);
+	public function getPost() {		
+		return new GhBlog_Model_Post($this->_hash, $this->_parse());
+	}
+
+	protected function _parse() {
+		$rawContent = $this->_getRawContent();
+		$post['title'] = 'title';
+		$post['timestamp'] = time();
+		$post['tags'] = array('php', 'kohana', 'test');
+		$post['content'] = $rawContent;
+		return $post;
+	}
+
+	protected function _getRawContent() {
+		return $this->_provider->getContent($this->_ref);
 	}
 
 }

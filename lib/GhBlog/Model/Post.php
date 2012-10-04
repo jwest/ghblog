@@ -10,14 +10,12 @@ class GhBlog_Model_Post {
 	protected $_tags;
 	protected $_content;
 
-	public function __construct($hash, $rawContent) {
-		$this->_hash = $hash;
-		$this->_rawContent = $rawContent;
-		$this->_parse();
-	}
-
-	protected function _parse() {
-
+	public function __construct($hash, $data) {
+		$this->_hash = $hash;		
+		$this->_title = $data['title'];
+		$this->_timestamp = $data['timestamp'];
+		$this->_tags = $data['tags'];
+		$this->_content = $data['content'];
 	}
 
 	public function getHash() {
