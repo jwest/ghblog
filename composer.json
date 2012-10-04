@@ -1,0 +1,19 @@
+{
+    "name": "jwest/ghblog",
+    "description": "blog system with github(or git)",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0": {
+            "GhBlog": "lib/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jwest",
+            "email": "jwest@jwest.pl"
+        }
+    ],
+    "require": {
+
+    }
+}
