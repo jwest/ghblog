@@ -51,7 +51,8 @@ class GhBlog_Parser_Post implements GhBlog_Parser {
 
 	protected function _parseTags($tags) {
 		$tags = explode(',', $tags);
-		array_walk($tags, 'trim');
+		foreach($tags as &$tag)
+			$tag = trim($tag);
 		return $tags;
 	}
 
@@ -61,7 +62,7 @@ class GhBlog_Parser_Post implements GhBlog_Parser {
 		if (!isset($this->_container['date']) || !$this->_container['date'])
 			throw new GhBlog_Parser_Exception('Date is invalid');
 		if (!isset($this->_container['tags']) || !is_array($this->_container['tags']))
-			throw new GhBlog_Parser_Exception('Title must exists');
+			throw new GhBlog_Parser_Exception('Tags must exists');
 		if (!isset($this->_container['content']) || empty($this->_container['content'])) 
 			throw new GhBlog_Parser_Exception('Content must exists');
 	}

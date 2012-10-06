@@ -3,8 +3,6 @@
 class GhBlog_Model_Post {
 
 	protected $_hash;
-	protected $_rawContent;
-
 	protected $_title;
 	protected $_timestamp;
 	protected $_tags;
@@ -36,6 +34,33 @@ class GhBlog_Model_Post {
 
 	public function getContent() {
 		return $this->_content;
+	}
+
+	public function save() {
+		file_put_contents($this->_getContentFileName(), $this->getContent());
+		file_put_contents($this->_getDescriptionFileName(), json_encode($this));
+	}
+
+	protected function _getContentFileName() {
+		return GhBlog_Config::get('path.posts').'/'.
+			$this->getDate('Y').'/'.
+			$this->getDate('m').'/'.
+			$this->getDate('d_H_i').'_'.
+			$this->getHash().
+			'.md';
+	}
+
+	protected function _getDescriptionFileName() {
+		return GhBlog_Config::get('path.posts').'/'.
+			$this->getDate('Y').'/'.
+			$this->getDate('m').'/'.
+			$this->getDate('d_H_i').'_'.
+			$this->getHash().
+			'.json';
+	}
+
+	protected function _isChange() {
+
 	}
 
 }
