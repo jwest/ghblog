@@ -4,11 +4,15 @@ require 'vendor/autoload.php';
 
 date_default_timezone_set('Europe/Warsaw');
 
-$api = new GhBlog_Provider_Github_Api(GhBlog_Config::get('provider.repo'));
-$files = $api->getList('2012');
+$app = new \Slim\Slim();
 
-foreach($files as $file) {
-	
-}
+$app->get('/', function () {
+    echo "Hello";
+});
 
-var_dump($files[0]->getPost());
+$app->post('/hook', function(){
+	$request = new \GhBlog\JsonRequestParser();
+	var_dump($request->read());
+});
+
+$app->run();
