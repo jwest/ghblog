@@ -1,6 +1,6 @@
 {
     "name": "jwest/ghblog",
-    "description": "blog system with github(or git)",
+    "description": "blog system with github",
     "minimum-stability": "dev",
     "autoload": {
         "psr-0": {
@@ -15,6 +15,7 @@
     ],
     "require": {
         "dflydev/markdown": "dev-master",
-        "twig/twig": "1.*"
+        "twig/twig": "1.*",
+        "slim/slim": "dev-master"
     }
 }

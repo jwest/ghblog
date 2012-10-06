@@ -1,4 +1,4 @@
 ghblog
 ======
 
-Blog system with github api (or git)
+Blog system with github
