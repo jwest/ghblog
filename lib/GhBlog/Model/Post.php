@@ -39,11 +39,11 @@ class Post {
 		return $this->_content;
 	}
 
-	public function load() {
+	public function load($forceApi = false) {
 		if ($this->isLoaded()) 
 			return true;
 		$content = $this->_loadFromData();
-		if($content === false) {
+		if($content === false || $forceApi = true) {
 			$content = $this->_loadFromApi();
 			if($content === false)
 				return false;
