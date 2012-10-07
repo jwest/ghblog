@@ -2,13 +2,17 @@
 
 namespace GhBlog\Api;
 
+use GhBlog\Config;
+
 class Github implements IApi {
+
+	const API_ADDRESS = 'https://api.github.com/';
 
 	protected $_repo;
 
 	public function __construct($param = null) {
 		if ($param === null)
-			$param = 'jwest/git-blog';
+			$param = Config::app()->get('api.provider.repo');
 		$this->_repo = $param;
 	}
 
@@ -18,7 +22,7 @@ class Github implements IApi {
 	}
 
 	protected function _getContentAndValidate($path) {
-		$content = $this->_request('repos/'.$this->_repo.'/contents/'.$path);
+		$content = json_decode($this->_request('repos/'.$this->_repo.'/contents/'.$path));
 		if(isset($content->message) && $content->message == 'Not Found')
 			throw new Exception('Object not found in Github Api');
 		return $content;
@@ -33,12 +37,12 @@ class Github implements IApi {
 
 	protected function _request($url) {
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'https://api.github.com/'.$url);
+		curl_setopt($ch, CURLOPT_URL, self::API_ADDRESS.$url);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$output = curl_exec($ch);
 		curl_close($ch);
-		return json_decode($output);
+		return $output;
 	}
 
 }

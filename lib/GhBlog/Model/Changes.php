@@ -10,8 +10,8 @@ class Changes {
 
 	protected $_pushInfo;
 
-	public function __construct($pushInfo) {
-		$this->_pushInfo = $pushInfo;
+	public function __construct($requestPushInfo) {
+		$this->_pushInfo = $requestPushInfo->read();
 	}
 
 	public function getAdded() {
@@ -30,8 +30,8 @@ class Changes {
 		return $this->_pushInfo->commits;
 	}
 
-	protected function _getPropFromCommit($commitObj, $prop) {
-		return $commitObj->$prop;
+	protected function _getPropFromCommit($commitObj, $prop) {		
+		return array_fill_keys($commitObj->$prop, true);
 	}
 
 	protected function _getFiles($prop) {
@@ -39,7 +39,7 @@ class Changes {
 		foreach ($this->_getCommits() as $commit) {
 			$files += $this->_getPropFromCommit($commit, $prop);
 		}
-		return $files;
+		return array_keys($files);
 	}
 
 }

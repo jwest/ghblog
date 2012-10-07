@@ -11,8 +11,22 @@ $app->get('/', function () {
 });
 
 $app->post('/hook', function(){
-	$request = new \GhBlog\JsonRequestParser();
-	var_dump($request->read());
+	$changesObj = new \GhBlog\Model\Changes(new \GhBlog\JsonRequestParser());
+	foreach ($changesObj->getAdded() as $added) {
+		$post = new \GhBlog\Model\Post($added);
+		$post->load();
+		$post->save();
+	}
+	foreach ($changesObj->getModified() as $modified) {
+		$post = new \GhBlog\Model\Post($modified);
+		$post->load();
+		$post->save();
+	}
+	foreach ($changesObj->getRemoved() as $removed) {
+		$post = new \GhBlog\Model\Post($removed);
+		$post->load();
+		$post->remove();
+	}
 });
 
 $app->run();

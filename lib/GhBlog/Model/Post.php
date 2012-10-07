@@ -2,6 +2,8 @@
 
 namespace GhBlog\Model;
 
+use GhBlog\Config;
+
 class Post {
 
 	protected $_path;
@@ -9,6 +11,7 @@ class Post {
 	protected $_tags;
 	protected $_timestamp;
 	protected $_content;
+	protected $_rawContent;
 
 	protected $_loaded = false;
 
@@ -45,8 +48,17 @@ class Post {
 			if($content === false)
 				return false;
 		}
+		$this->_rawContent = $content;
 		$this->_parse($content);
 		return true;
+	}
+
+	public function save() {
+		file_put_contents($this->_getFilePath(), $this->_rawContent);
+	}
+
+	public function remove() {
+		unlink($this->_getFilePath());
 	}
 
 	protected function _bindValues($values) {
@@ -65,14 +77,18 @@ class Post {
 	}
 
 	protected function _loadFromApi() {
-		$api = new \GhBlog\Api\Github();
-		$content = $api->getFileContent($this->_path);
-		$this->_parse($content);
+		$content = $this->_getProvider()->getFileContent($this->_path);		
 		return $content;
 	}
 
+	protected function _getProvider() {
+		$providerName = Config::app()->get('api.provider');
+		$providerClass = '\\GhBlog\\Api\\'.ucfirst($providerName);
+		return new $providerClass();
+	}
+
 	protected function _getFilePath() {
-		return '/'.$this->_path;
+		return Config::app()->get('path.posts').'/'.md5($this->_path).'.md';
 	}
 
 	protected function _parse($content) {

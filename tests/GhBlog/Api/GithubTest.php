@@ -9,7 +9,7 @@ class GhBlog_Api_GithubTest extends PHPUnit_Framework_TestCase {
 		$obj = $this->getMock('A1', array('_request'));
         $obj->expects($this->any())
         	->method('_request')
-            ->will($this->returnValue((object)array('encoding' => 'plain', 'content' => 'test')));
+            ->will($this->returnValue('{"encoding":"plain", "content":"test"}'));
 
 		$content = $obj->getFileContent('');
 		$this->assertEquals('test', $content);
@@ -22,7 +22,7 @@ class GhBlog_Api_GithubTest extends PHPUnit_Framework_TestCase {
 		$obj = $this->getMock('A2', array('_request'));
         $obj->expects($this->any())
         	->method('_request')
-            ->will($this->returnValue((object)array('encoding' => 'base64', 'content' => 'dGVzdA==')));
+            ->will($this->returnValue('{"encoding":"base64", "content":"dGVzdA=="}'));
 
 		$content = $obj->getFileContent('');
 		$this->assertEquals('test', $content);
@@ -35,7 +35,7 @@ class GhBlog_Api_GithubTest extends PHPUnit_Framework_TestCase {
 		$obj = $this->getMock('A3', array('_request'));
         $obj->expects($this->any())
         	->method('_request')
-            ->will($this->returnValue((object)array('message' => 'Not Found')));
+            ->will($this->returnValue('{"message":"Not Found"}'));
 
         try {
         	$obj->getFileContent('');
