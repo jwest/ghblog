@@ -15,15 +15,37 @@ class Changes {
 	}
 
 	public function getAdded() {
-		return $this->_getFiles(self::ADDED);
+		$files = array();
+		foreach ($this->_getFiles(self::ADDED) as $file){
+			$files[] = $this->_loadFromApi($file);
+		};
+		return $files;
 	}
 
 	public function getModified() {
-		return $this->_getFiles(self::MODIFIED);
+		$files = array();
+		foreach ($this->_getFiles(self::MODIFIED) as $file){
+			$files[] = $this->_loadFromApi($file);
+		};
+		return $files;
 	}
 
 	public function getRemoved() {
-		return $this->_getFiles(self::REMOVED);
+		$files = array();
+		foreach ($this->_getFiles(self::REMOVED) as $file){
+			$files[] = $this->_loadFromFile($file);
+		};
+		return $files;
+	}
+
+	protected function _loadFromApi($file) {
+		$post = new Post();
+		return $post->loadFromApi($file);
+	}
+
+	protected function _loadFromFile($file) {
+		$post = new Post();
+		return $post->loadFromFile($file);	
 	}
 
 	protected function _getCommits() {

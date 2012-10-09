@@ -15,10 +15,6 @@ class Post {
 
 	protected $_loaded = false;
 
-	public function __construct($path) {
-		$this->_path = $path;
-	}
-
 	public function isLoaded() {
 		return $this->_loaded;
 	}
@@ -39,18 +35,16 @@ class Post {
 		return $this->_content;
 	}
 
-	public function load($forceApi = false) {
-		if ($this->isLoaded()) 
-			return true;
-		$content = $this->_loadFromData();
-		if($content === false || $forceApi = true) {
-			$content = $this->_loadFromApi();
-			if($content === false)
-				return false;
-		}
-		$this->_rawContent = $content;
+	public function loadFromFile($path) {
+		$this->_path = $path;
+		$content = $this->_loadFromFile();
 		$this->_parse($content);
-		return true;
+	}
+
+	public function loadFromApi($path) {
+		$this->_path = $path;
+		$content = $this->_loadFromApi();
+		$this->_parse($content);
 	}
 
 	public function save() {
@@ -68,7 +62,7 @@ class Post {
 		$this->_content = $values['content'];
 	}
 
-	protected function _loadFromData() {
+	protected function _loadFromFile() {
 		if (file_exists($this->_getFilePath())) {
 			$content = file_get_contents($this->_getFilePath());
 			return $content;
@@ -88,7 +82,7 @@ class Post {
 	}
 
 	protected function _getFilePath() {
-		return Config::app()->get('path.posts').'/'.md5($this->_path).'.md';
+		return Config::app()->get('path.posts').'/'.$this->getDate('Y').'/'.$this->getDate('m').'/'.md5($this->_path).'.md';
 	}
 
 	protected function _parse($content) {

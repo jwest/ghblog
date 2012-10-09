@@ -2,32 +2,28 @@
 
 require 'vendor/autoload.php';
 
-\GhBlog\Config::$configPath = '.';
+use \Slim\Slim;
+use \GhBlog\Model\Changes;
+use \GhBlog\Config;
+use \GhBlog\JsonRequestParser;
+
+Config::$configPath = '.';
 date_default_timezone_set('Europe/Warsaw');
 
-$app = new \Slim\Slim();
+$app = new Slim();
 
 $app->get('/', function () {
     echo "Hello";
 });
 
-$app->post('/hook/'.\GhBlog\Config::app()->get('api.hook.hash'), function(){
-	$changesObj = new \GhBlog\Model\Changes(new \GhBlog\JsonRequestParser());
-	foreach ($changesObj->getAdded() as $added) {
-		$post = new \GhBlog\Model\Post($added);
-		$post->load();
+$app->post('/hook/'.Config::app()->get('api.hook.hash'), function(){
+	$changesObj = new Changes(new JsonRequestParser());
+	foreach ($changesObj->getAdded() as $post)
 		$post->save();
-	}
-	foreach ($changesObj->getModified() as $modified) {
-		$post = new \GhBlog\Model\Post($modified);
-		$post->load(true);
+	foreach ($changesObj->getModified() as $post)
 		$post->save();
-	}
-	foreach ($changesObj->getRemoved() as $removed) {
-		$post = new \GhBlog\Model\Post($removed);
-		$post->load();
+	foreach ($changesObj->getRemoved() as $post)
 		$post->remove();
-	}
 });
 
 $app->run();
