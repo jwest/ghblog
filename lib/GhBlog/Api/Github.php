@@ -16,7 +16,7 @@ class Github implements IApi {
 		$this->_repo = $param;
 	}
 
-	public function getFileContent($path) {
+	public function getContent($path) {
 		$content = $this->_getContentAndValidate($path);
 		return $this->_conversion($content);
 	}

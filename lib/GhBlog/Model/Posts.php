@@ -39,26 +39,39 @@ class Posts {
 	}
 
 	public function getNext() {
-		//if ($this->_checkIfPageExists($this->_year, $this->_mounth, $this->_page+1));
-		//	return new self($this->_year, $this->_mounth, $this->_page+1);
-		$mounth = $this->_getNextMounth($this->_year, 12);
-		var_dump(new self($this->_year, $mounth, 1));
+		if ($this->_checkIfPageExists($this->_year, $this->_mounth, $this->_page+1))
+			return new self($this->_year, $this->_mounth, $this->_page+1);		
+		$year = $this->_year;
+		$mounth = $this->_getNextElem($this->_year, $this->_mounth);
+		if ($mounth === false) {
+			$year = $this->_getNextElem($this->_year);
+			$mounth = $this->_getFirstMounth($year);
+		}
+		return new self($year, $mounth, 1);
 	}
 
 	protected function _checkIfPageExists($year, $mounth, $page) {
-		return (bool) array_slice(glob($this->_getPath($year, $mounth).'/*'), ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
+		$files = array_slice(glob($this->_getPath($year, $mounth).'/*'), ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
+		return (bool) !empty($files);
 	}
 
-	protected function _getNextMounth($year, $mounth) {
-		$mounths = glob($this->_getPath($year).'/*');
-		$i = array_search($this->_getPath($year, $mounth), $mounths);
+	protected function _getNextElem($year, $mounth = null) {
+		$items = glob($this->_getPath($mounth == null ? null : $year).'/*');
+		natsort($items);
+		$i = array_search($this->_getPath($year, $mounth), $items);
 		if ($i === false)
-			throw new \Exception('Mounth not find!');
-		if (array_key_exists($i+1, $mounths)) {
-			$pathPart = explode('/', $mounths[$i+1]);
+			throw new \Exception('Elem not found!');
+		if (array_key_exists($i+1, $items)) {
+			$pathPart = explode('/', $items[$i+1]);
 			return $pathPart[count($pathPart)-1];
 		}
 		return false;
+	}
+
+	protected function _getFirstMounth($year) {
+		$mounths = glob($this->_getPath().'/'.$year.'/*');
+		$pathPart = explode('/', $mounths[0]);
+		return $pathPart[count($pathPart)-1];
 	}
 
 	protected function _createNewPostObject($file) {

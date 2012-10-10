@@ -71,7 +71,7 @@ class Post {
 	}
 
 	protected function _loadFromApi() {
-		$content = $this->_getProvider()->getFileContent($this->_path);		
+		$content = $this->_getProvider()->getContent($this->_path);		
 		return $content;
 	}
 
