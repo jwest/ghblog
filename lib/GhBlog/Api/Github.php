@@ -10,15 +10,27 @@ class Github implements IApi {
 
 	protected $_repo;
 
-	public function __construct($param = null) {
-		if ($param === null)
-			$param = Config::app()->get('api.provider.repo');
-		$this->_repo = $param;
+	public function __construct(array $param = array()) {
+		if (!isset($param['path']))
+			$param['path'] = Config::app()->get('api.provider.repo');
+		$this->_repo = $param['path'];
 	}
 
 	public function getContent($path) {
 		$content = $this->_getContentAndValidate($path);
 		return $this->_conversion($content);
+	}
+
+	public function putContent($path, $content) {
+		throw new Exception('not implemented');
+	}
+
+	public function listFiles($path = '') {
+		throw new Exception('not implemented');
+	}
+
+	public function listDirs($path = '') {
+		throw new Exception('not implemented');
 	}
 
 	protected function _getContentAndValidate($path) {

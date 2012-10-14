@@ -40,12 +40,24 @@ class Posts {
 
 	public function getNext() {
 		if ($this->_checkIfPageExists($this->_year, $this->_mounth, $this->_page+1))
-			return new self($this->_year, $this->_mounth, $this->_page+1);		
+			return new self($this->_year, $this->_mounth, $this->_page+1);
 		$year = $this->_year;
 		$mounth = $this->_getNextElem($this->_year, $this->_mounth);
 		if ($mounth === false) {
 			$year = $this->_getNextElem($this->_year);
 			$mounth = $this->_getFirstMounth($year);
+		}
+		return new self($year, $mounth, 1);
+	}
+
+	public function getPrev() {
+		if ($this->_page > 0 && $this->_checkIfPageExists($this->_year, $this->_mounth, $this->_page-1))
+			return new self($this->_year, $this->_mounth, $this->_page-1);
+		$year = $this->_year;
+		$mounth = $this->_getPrevElem($this->_year, $this->_mounth);
+		if ($mounth === false) {
+			$year = $this->_getPrevElem($this->_year);
+			$mounth = $this->_getLastMounth($year);
 		}
 		return new self($year, $mounth, 1);
 	}
@@ -68,9 +80,29 @@ class Posts {
 		return false;
 	}
 
+	protected function _getPrevElem($year, $mounth = null) {
+		$items = glob($this->_getPath($mounth == null ? null : $year).'/*');
+		natsort($items);
+		$items = array_reverse($items);
+		$i = array_search($this->_getPath($year, $mounth), $items);
+		if ($i === false)
+			throw new \Exception('Elem not found!');
+		if (array_key_exists($i+1, $items)) {
+			$pathPart = explode('/', $items[$i+1]);
+			return $pathPart[count($pathPart)-1];
+		}
+		return false;
+	}
+
 	protected function _getFirstMounth($year) {
 		$mounths = glob($this->_getPath().'/'.$year.'/*');
 		$pathPart = explode('/', $mounths[0]);
+		return $pathPart[count($pathPart)-1];
+	}
+
+	protected function _getLastMounth($year) {
+		$mounths = glob($this->_getPath().'/'.$year.'/*');
+		$pathPart = explode('/', $mounths[count($mounths)-1]);
 		return $pathPart[count($pathPart)-1];
 	}
 

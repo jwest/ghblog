@@ -18,12 +18,12 @@ class Files implements IApi {
 		return file_put_contents($this->_path.'/'.$path, $content);
 	}
 
-	public function listFiles($path) {
+	public function listFiles($path = '') {
 		
 	}
 
-	public function listDirs($path) {
-
+	public function listDirs($path = '') {
+		return glob($this->_path.'/'.$path, GLOB_ONLYDIR);
 	}
 
 }

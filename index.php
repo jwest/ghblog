@@ -5,6 +5,8 @@ require 'vendor/autoload.php';
 use \Slim\Slim;
 use \GhBlog\Model\Changes;
 use \GhBlog\Config;
+use \GhBlog\Model\Post;
+use \GhBlog\Model\Posts;
 use \GhBlog\JsonRequestParser;
 
 Config::$configPath = '.';
@@ -13,7 +15,8 @@ date_default_timezone_set('Europe/Warsaw');
 $app = new Slim();
 
 $app->get('/', function () {
-    echo "Hello";
+    $posts = new Posts(date('Y'), date('m'), 1);
+    var_dump($posts);
 });
 
 $app->post('/hook/'.Config::app()->get('api.hook.hash'), function(){
