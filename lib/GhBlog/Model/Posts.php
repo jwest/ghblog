@@ -6,6 +6,8 @@ use GhBlog\Config;
 
 class Posts {
 
+	protected $_filesProvider;
+
 	protected $_year;
 	protected $_mounth;
 	protected $_page;
@@ -16,6 +18,7 @@ class Posts {
 		$this->_year = ($year === null) ? date('Y') : $year;
 		$this->_mounth = ($mounth === null) ? date('m') : $mounth;
 		$this->_page = $page;
+		$this->_filesProvider = \GhBlog\Api::factory('Files');
 	}
 
 	public function getYear() {
@@ -63,27 +66,23 @@ class Posts {
 	}
 
 	protected function _checkIfPageExists($year, $mounth, $page) {
-		$files = array_slice(glob($this->_getPath($year, $mounth).'/*'), ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
+		$files = $this->_filesProvider->listFiles($this->_getPath($year, $mounth));
+		$files = array_slice($files, ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
 		return (bool) !empty($files);
 	}
 
 	protected function _getNextElem($year, $mounth = null) {
-		$items = glob($this->_getPath($mounth == null ? null : $year).'/*');
-		natsort($items);
-		$i = array_search($this->_getPath($year, $mounth), $items);
-		if ($i === false)
-			throw new \Exception('Elem not found!');
-		if (array_key_exists($i+1, $items)) {
-			$pathPart = explode('/', $items[$i+1]);
-			return $pathPart[count($pathPart)-1];
-		}
-		return false;
+		$items = $this->_filesProvider->listDirs($this->_getPath($mounth == null ? null : $year));
+		return $this->_searchElem($items, $year, $mounth);
 	}
 
 	protected function _getPrevElem($year, $mounth = null) {
-		$items = glob($this->_getPath($mounth == null ? null : $year).'/*');
-		natsort($items);
+		$items = $this->_filesProvider->listDirs($this->_getPath($mounth == null ? null : $year));
 		$items = array_reverse($items);
+		return $this->_searchElem($items, $year, $mounth);	
+	}
+
+	protected function _searchElem($items, $year, $mounth) {
 		$i = array_search($this->_getPath($year, $mounth), $items);
 		if ($i === false)
 			throw new \Exception('Elem not found!');
@@ -95,13 +94,13 @@ class Posts {
 	}
 
 	protected function _getFirstMounth($year) {
-		$mounths = glob($this->_getPath().'/'.$year.'/*');
+		$mounths = $this->_filesProvider->listDirs($this->_getPath($year));
 		$pathPart = explode('/', $mounths[0]);
 		return $pathPart[count($pathPart)-1];
 	}
 
 	protected function _getLastMounth($year) {
-		$mounths = glob($this->_getPath().'/'.$year.'/*');
+		$mounths = $this->_filesProvider->listDirs($this->_getPath($year));
 		$pathPart = explode('/', $mounths[count($mounths)-1]);
 		return $pathPart[count($pathPart)-1];
 	}
@@ -113,14 +112,14 @@ class Posts {
 	}
 
 	protected function _getFilesFromPath($year, $mounth, $page) {
-		$files = array_slice(glob($this->_getPath($year, $mounth).'/*'), ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
-		return $files;
+		$files = $this->_filesProvider->listFiles($this->_getPath($year, $mounth));
+		return array_slice($files, ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
 	}
 
 	protected function _getPath($year = null, $mounth = null) {
-		$path = Config::app()->get('path.posts');
+		$path = 'posts';
 		$path .= ($year !== null) ? '/'.$year : '';
-		$path .= ($mounth !== null) ? '/'.$mounth : '';
+		$path .= ($mounth !== null) ? '/'.$mounth : '';		
 		return $path;
 	}
 

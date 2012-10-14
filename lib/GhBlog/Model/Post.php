@@ -2,6 +2,7 @@
 
 namespace GhBlog\Model;
 
+use GhBlog\Api;
 use GhBlog\Config;
 
 class Post {
@@ -48,7 +49,7 @@ class Post {
 	}
 
 	public function save() {
-		file_put_contents($this->_getFilePath(), $this->_rawContent);
+		Api::factory('Files')->putContent($this->_getFilePath(), $this->_rawContent);
 	}
 
 	public function remove() {
@@ -63,26 +64,20 @@ class Post {
 	}
 
 	protected function _loadFromFile() {
-		if (file_exists($this->_getFilePath())) {
-			$content = file_get_contents($this->_getFilePath());
-			return $content;
-		}
-		return false;
+		try {
+			return Api::factory('Files')->getContent($this->_getFilePath());
+		} catch(Api\Exception $e) {
+			return false;
+		}		
 	}
 
 	protected function _loadFromApi() {
-		$content = $this->_getProvider()->getContent($this->_path);		
+		$content = Api::factory('Github')->getContent($this->_path);		
 		return $content;
 	}
 
-	protected function _getProvider() {
-		$providerName = Config::app()->get('api.provider');
-		$providerClass = '\\GhBlog\\Api\\'.ucfirst($providerName);
-		return new $providerClass();
-	}
-
 	protected function _getFilePath() {
-		return Config::app()->get('path.posts').'/'.$this->getDate('Y').'/'.$this->getDate('m').'/'.md5($this->_path).'.md';
+		return 'posts/'.$this->getDate('Y').'/'.$this->getDate('m').'/'.md5($this->_path).'.md';
 	}
 
 	protected function _parse($content) {

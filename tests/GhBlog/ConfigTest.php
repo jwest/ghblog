@@ -5,8 +5,8 @@ use GhBlog\Config;
 class GhBlog_ConfigTest extends PHPUnit_Framework_TestCase {
 
 	public function testGetFromLoadFile() {
-		$this->assertEquals('github', Config::app()->get('api.provider'));
-		$this->assertEquals('jwest/git-blog', Config::app()->get('api.provider.repo'));
+		$api = Config::app()->get('api.github');
+		$this->assertEquals('jwest/git-blog', $api['repo']);
 		$this->assertEquals('data/template', Config::app()->get('path.template'));
 		$this->assertEquals(array(1,2,3,4), Config::app()->get('arr.test'));
 	}

@@ -8,12 +8,11 @@ class Github implements IApi {
 
 	const API_ADDRESS = 'https://api.github.com/';
 
-	protected $_repo;
+	protected $_repo;	
 
-	public function __construct(array $param = array()) {
-		if (!isset($param['path']))
-			$param['path'] = Config::app()->get('api.provider.repo');
-		$this->_repo = $param['path'];
+	public function __construct(array $params = array()) {
+		$config = Config::app()->get('api.github');
+		$this->_repo = $config['repo'];
 	}
 
 	public function getContent($path) {
