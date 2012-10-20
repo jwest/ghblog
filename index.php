@@ -15,8 +15,8 @@ date_default_timezone_set('Europe/Warsaw');
 $app = new Slim();
 
 $app->get('/', function () {
-    $posts = new Posts(date('Y'), date('m'), 1);
-    var_dump($posts);
+    $posts = new Posts();
+    var_dump($posts->getList());
 });
 
 $app->post('/hook/'.Config::app()->get('api.hook.hash'), function(){

@@ -7,8 +7,8 @@ class Config {
 	public static $configPath = '.';
 
 	protected $_config = array(
-		'api.provider' => 'Github',
-		'api.provider.repo' => 'jwest/git-blog',
+		//'api.github' => array(),
+		//'api.files' => array(),
 		'path.template' => '',
 		'path.date' => '',
 		'path.cache' => '',

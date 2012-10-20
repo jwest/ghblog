@@ -12,13 +12,17 @@ class Posts {
 	protected $_mounth;
 	protected $_page;
 
-	protected $_itemsPerPage = 5;
+	protected $_itemsPerPage = 3;
 
 	public function __construct($year = null, $mounth = null, $page = 1) {
+		$this->_filesProvider = \GhBlog\Api::factory('Files');
+		if ($year === null && $mounth === null) {
+			$this->_loadActual();
+			return;
+		}
 		$this->_year = ($year === null) ? date('Y') : $year;
 		$this->_mounth = ($mounth === null) ? date('m') : $mounth;
-		$this->_page = $page;
-		$this->_filesProvider = \GhBlog\Api::factory('Files');
+		$this->_page = $page;		
 	}
 
 	public function getYear() {
@@ -33,6 +37,14 @@ class Posts {
 		return $this->_page;
 	}
 
+	public function _loadActual() {
+		$years = $this->_filesProvider->listDirs($this->_getPath());
+		$this->_year = $this->_getYearFromPath($years[count($years)-1]);
+		$mounths = $this->_filesProvider->listDirs($this->_getPath($this->_year));
+		$this->_mounth = $this->_getMounthFromPath($mounths[count($mounths)-1]);
+		$this->_page = 1;
+	}
+
 	public function getList() {
 		$files = array();
 		foreach ($this->_getFilesFromPath($this->_year, $this->_mounth, $this->_page) as $file) {
@@ -41,7 +53,7 @@ class Posts {
 		return $files;
 	}
 
-	public function getNext() {
+	public function getNext() {		
 		if ($this->_checkIfPageExists($this->_year, $this->_mounth, $this->_page+1))
 			return new self($this->_year, $this->_mounth, $this->_page+1);
 		$year = $this->_year;
@@ -54,19 +66,20 @@ class Posts {
 	}
 
 	public function getPrev() {
-		if ($this->_page > 0 && $this->_checkIfPageExists($this->_year, $this->_mounth, $this->_page-1))
+		if ($this->_page > 1 && $this->_checkIfPageExists($this->_year, $this->_mounth, $this->_page-1))
 			return new self($this->_year, $this->_mounth, $this->_page-1);
 		$year = $this->_year;
 		$mounth = $this->_getPrevElem($this->_year, $this->_mounth);
 		if ($mounth === false) {
 			$year = $this->_getPrevElem($this->_year);
-			$mounth = $this->_getLastMounth($year);
+			$mounth = $this->_getLastMounth($year);			
 		}
-		return new self($year, $mounth, 1);
+		$page = $this->_getLastPage($year, $mounth);
+		return new self($year, $mounth, $page);
 	}
 
 	protected function _checkIfPageExists($year, $mounth, $page) {
-		$files = $this->_filesProvider->listFiles($this->_getPath($year, $mounth));
+		$files = $this->_filesProvider->listFiles($this->_getPath($year, $mounth));		
 		$files = array_slice($files, ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
 		return (bool) !empty($files);
 	}
@@ -92,7 +105,7 @@ class Posts {
 		}
 		return false;
 	}
-
+ 
 	protected function _getFirstMounth($year) {
 		$mounths = $this->_filesProvider->listDirs($this->_getPath($year));
 		$pathPart = explode('/', $mounths[0]);
@@ -105,13 +118,20 @@ class Posts {
 		return $pathPart[count($pathPart)-1];
 	}
 
+	protected function _getLastPage($year, $mounth) {
+		$files = $this->_filesProvider->listFiles($this->_getPath($year, $mounth));
+		$files = array_reverse($files);
+		$pagesCount = ceil(count($files) / $this->_itemsPerPage);
+		return (int) $pagesCount == 0 ? 1 : $pagesCount;
+	}
+
 	protected function _createNewPostObject($file) {
 		$post = new Post();
 		$post->loadFromFile($file);
 		return $post;
 	}
 
-	protected function _getFilesFromPath($year, $mounth, $page) {
+	protected function _getFilesFromPath($year, $mounth, $page) {		
 		$files = $this->_filesProvider->listFiles($this->_getPath($year, $mounth));
 		return array_slice($files, ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
 	}
@@ -121,6 +141,19 @@ class Posts {
 		$path .= ($year !== null) ? '/'.$year : '';
 		$path .= ($mounth !== null) ? '/'.$mounth : '';		
 		return $path;
+	}
+
+	protected function _getYearFromPath($path) {		
+		return $this->_getElemFromPath($path, 1);
+	}
+
+	protected function _getMounthFromPath($path) {
+		return $this->_getElemFromPath($path, 2);
+	}
+
+	private function _getElemFromPath($path, $i) {
+		$pathPart = explode('/', $path);		
+		return array_key_exists($i, $pathPart) ? $pathPart[$i] : false;
 	}
 
 }

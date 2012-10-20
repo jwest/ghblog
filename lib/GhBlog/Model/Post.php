@@ -77,7 +77,7 @@ class Post {
 	}
 
 	protected function _getFilePath() {
-		return 'posts/'.$this->getDate('Y').'/'.$this->getDate('m').'/'.md5($this->_path).'.md';
+		return $this->_path;
 	}
 
 	protected function _parse($content) {

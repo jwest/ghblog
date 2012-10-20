@@ -19,7 +19,7 @@ class Files implements IApi {
 		if (file_exists($this->_path.'/'.$path)) {
 			return file_get_contents($this->_path.'/'.$path);
 		}
-		throw new Api/Exception('File not exists');
+		throw new Exception('File not exists');
 	}
 
 	public function putContent($path, $content) {

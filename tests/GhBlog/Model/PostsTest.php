@@ -39,60 +39,48 @@ class GhBlog_Model_PostsTest extends PHPUnit_Framework_TestCase {
 
 	public function testGetPostsNextList() {
 
-		$obj = new \GhBlog\Model\Posts("2012","01",1);
-		$next = $obj->getNext();
-		$this->assertEquals("2012", $next->getYear());
-		$this->assertEquals("08", $next->getMounth());
-		$this->assertEquals(1, $next->getPage());		
-
-		$next = $next->getNext();
-		$this->assertEquals("2012", $next->getYear());
-		$this->assertEquals("12", $next->getMounth());
-		$this->assertEquals(1, $next->getPage());
-
-		$next = $next->getNext();
-		$this->assertEquals("2014", $next->getYear());
-		$this->assertEquals("02", $next->getMounth());
-		$this->assertEquals(1, $next->getPage());
-
-		$next = $next->getNext();
-		$this->assertEquals("2014", $next->getYear());
-		$this->assertEquals("04", $next->getMounth());
-		$this->assertEquals(1, $next->getPage());	
-
-		$next = $next->getNext();
-		$this->assertEquals("2014", $next->getYear());
-		$this->assertEquals("07", $next->getMounth());
-		$this->assertEquals(1, $next->getPage());	
+		$obj = new \GhBlog\Model\Posts("2012","03",1);
+		$obj = $this->_getNext($obj, "2012", "08", 1);
+		$obj = $this->_getNext($obj, "2012", "08", 2);	
+		$obj = $this->_getNext($obj, "2012", "12", 1);
+		$obj = $this->_getNext($obj, "2014", "02", 1);
+		$obj = $this->_getNext($obj, "2014", "04", 1);
+		$obj = $this->_getNext($obj, "2014", "07", 1);
 	}
 
 	public function testGetPostsPrevList() {
 
-		$obj = new \GhBlog\Model\Posts("2014","07",1);
-		$prev = $obj->getPrev();
-		$this->assertEquals("2014", $prev->getYear());
-		$this->assertEquals("04", $prev->getMounth());
-		$this->assertEquals(1, $prev->getPage());		
+		$obj = new \GhBlog\Model\Posts("2014","10",1);
+		$obj = $this->_getPrev($obj, "2014", "07", 1);
+		$obj = $this->_getPrev($obj, "2014", "04", 1);
+		$obj = $this->_getPrev($obj, "2014", "02", 1);
+		$obj = $this->_getPrev($obj, "2012", "12", 1);
+		$obj = $this->_getPrev($obj, "2012", "08", 2);
+		$obj = $this->_getPrev($obj, "2012", "08", 1);
+		$obj = $this->_getPrev($obj, "2012", "03", 1);
+	}
 
-		$prev = $prev->getPrev();
-		$this->assertEquals("2014", $prev->getYear());
-		$this->assertEquals("02", $prev->getMounth());
-		$this->assertEquals(1, $prev->getPage());
+	public function testGetNewPost() {
+		$obj = new \GhBlog\Model\Posts();
+		$this->_objAssert($obj, "2014", "10", 1);
+	}
 
-		$prev = $prev->getPrev();
-		$this->assertEquals("2012", $prev->getYear());
-		$this->assertEquals("12", $prev->getMounth());
-		$this->assertEquals(1, $prev->getPage());
+	private function _getNext($obj, $year, $mounth, $page) {
+		$obj = $obj->getNext();
+		$this->_objAssert($obj, $year, $mounth, $page);		
+		return $obj;
+	}
 
-		$prev = $prev->getPrev();
-		$this->assertEquals("2012", $prev->getYear());
-		$this->assertEquals("08", $prev->getMounth());
-		$this->assertEquals(1, $prev->getPage());	
+	private function _getPrev($obj, $year, $mounth, $page) {
+		$obj = $obj->getPrev();
+		$this->_objAssert($obj, $year, $mounth, $page);		
+		return $obj;
+	}
 
-		$prev = $prev->getPrev();
-		$this->assertEquals("2012", $prev->getYear());
-		$this->assertEquals("01", $prev->getMounth());
-		$this->assertEquals(1, $prev->getPage());	
+	private function _objAssert($obj, $year, $mounth, $page) {
+		$this->assertEquals($year, $obj->getYear());
+		$this->assertEquals($mounth, $obj->getMounth());
+		$this->assertEquals($page, $obj->getPage());	
 	}
 
 }
