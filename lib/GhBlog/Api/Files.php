@@ -26,6 +26,10 @@ class Files implements IApi {
 		return file_put_contents($this->_path.'/'.$path, $content);
 	}
 
+	public function removeContent($path) {
+		unlink($this->_path.'/'.$path);
+	}
+
 	public function listFiles($path = '') {
 		$items = glob($this->_path.'/'.$path.'/*');
 		natsort($items);

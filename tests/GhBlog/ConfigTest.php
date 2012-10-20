@@ -4,6 +4,18 @@ use GhBlog\Config;
 
 class GhBlog_ConfigTest extends PHPUnit_Framework_TestCase {
 
+	public function testLoadConfigNotExists() {
+		try {
+			Config::notExists()->get('notExists');
+			$this->assertTrue(false);
+		} catch (Exception $e) {
+			$this->assertTrue(true);
+			$this->assertEquals('Config file "notExists" not exists', $e->getMessage());
+		}
+
+		Config::$configPath = '.';
+	}
+
 	public function testGetFromLoadFile() {
 		$api = Config::app()->get('api.github');
 		$this->assertEquals('jwest/git-blog', $api['repo']);

@@ -53,7 +53,7 @@ class Post {
 	}
 
 	public function remove() {
-		unlink($this->_getFilePath());
+		Api::factory('Files')->removeContent($this->_getFilePath());
 	}
 
 	protected function _bindValues($values) {
@@ -72,8 +72,7 @@ class Post {
 	}
 
 	protected function _loadFromApi() {
-		$content = Api::factory('Github')->getContent($this->_path);		
-		return $content;
+		return Api::factory('Github')->getContent($this->_path);		
 	}
 
 	protected function _getFilePath() {

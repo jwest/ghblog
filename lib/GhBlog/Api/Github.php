@@ -21,15 +21,19 @@ class Github implements IApi {
 	}
 
 	public function putContent($path, $content) {
-		throw new Exception('not implemented');
+		throw new Exception('Not implemented');
+	}
+
+	public function removeContent($path) {
+		throw new Exception('Not implemented');
 	}
 
 	public function listFiles($path = '') {
-		throw new Exception('not implemented');
+		throw new Exception('Not implemented');
 	}
 
 	public function listDirs($path = '') {
-		throw new Exception('not implemented');
+		throw new Exception('Not implemented');
 	}
 
 	protected function _getContentAndValidate($path) {

@@ -6,6 +6,8 @@ use GhBlog\Config;
 
 class Posts {
 
+	const PATH_FOR_POSTS = 'posts';
+
 	protected $_filesProvider;
 
 	protected $_year;
@@ -21,7 +23,7 @@ class Posts {
 			return;
 		}
 		$this->_year = ($year === null) ? date('Y') : $year;
-		$this->_mounth = ($mounth === null) ? date('m') : $mounth;
+		$this->_mounth = str_pad(($mounth === null) ? date('m') : $mounth, 2, "0", STR_PAD_LEFT);
 		$this->_page = $page;		
 	}
 
@@ -137,7 +139,7 @@ class Posts {
 	}
 
 	protected function _getPath($year = null, $mounth = null) {
-		$path = 'posts';
+		$path = self::PATH_FOR_POSTS;
 		$path .= ($year !== null) ? '/'.$year : '';
 		$path .= ($mounth !== null) ? '/'.$mounth : '';		
 		return $path;

@@ -14,8 +14,8 @@ date_default_timezone_set('Europe/Warsaw');
 
 $app = new Slim();
 
-$app->get('/', function () {
-    $posts = new Posts();
+$app->get('/(:year(/:mounth(/:page)))', function ($year = null, $mounth = null, $page = null) {
+    $posts = new Posts($year, $mounth, $page);
     var_dump($posts->getList());
 });
 

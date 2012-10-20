@@ -46,4 +46,22 @@ class GhBlog_Api_GithubTest extends PHPUnit_Framework_TestCase {
         }
 	}
 
+	public function testNotImplementedMethods() {
+		$this->_tryNotImplementedMethods('putContent');
+		$this->_tryNotImplementedMethods('removeContent');
+		$this->_tryNotImplementedMethods('listFiles');
+		$this->_tryNotImplementedMethods('listDirs');
+	}
+
+	private function _tryNotImplementedMethods($method) {
+		try {
+			$obj = new \GhBlog\Api\Github();
+        	$obj->$method('', '', '');
+        	$this->assertTrue(false);
+        } catch(\GhBlog\Api\Exception $e) {
+        	$this->assertTrue(true);
+        	$this->assertEquals('Not implemented', $e->getMessage());
+        }
+	}
+
 }

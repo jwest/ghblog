@@ -16,10 +16,10 @@ class Config {
 
 	protected static $_instances = array();
 
-	public static function app() {
-		if (!array_key_exists('app', self::$_instances))
-			self::$_instances['app'] = new self('app');
-		return self::$_instances['app'];
+	public static function __callStatic($name, $args) {
+		if (!array_key_exists($name, self::$_instances))
+			self::$_instances[$name] = new self($name);
+		return self::$_instances[$name];
 	}
 
 	protected function __construct($name) {
