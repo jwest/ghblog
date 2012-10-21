@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}Posts{% endblock %}
+{% block content %}
+    {% for post in posts %}
+        <div class="post">
+            <h3>{{ post.getTitle() }}</h3>
+            <div>{{ post.getDate() }}</div>
+            <div>
+                {{ post.getContent()|raw }}
+            </div>
+        </div>
+    {% endfor %}
+    <div class="pagination">
+        {% if pagination.getNextPage() != null %}
+            <a href="/ghblog/{{pagination.getNextPage().getYear()}}/{{pagination.getNextPage().getMounth()}}/{{pagination.getNextPage().getPage()}}">Newest</a>
+        {% endif %}
+        {% if pagination.getPrevPage() != null %}
+            <a href="/ghblog/{{pagination.getPrevPage().getYear()}}/{{pagination.getPrevPage().getMounth()}}/{{pagination.getPrevPage().getPage()}}">Older</a>
+        {% endif %}
+    </div>
+{% endblock %}

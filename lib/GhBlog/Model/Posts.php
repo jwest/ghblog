@@ -24,7 +24,7 @@ class Posts {
 		}
 		$this->_year = ($year === null) ? date('Y') : $year;
 		$this->_mounth = str_pad(($mounth === null) ? date('m') : $mounth, 2, "0", STR_PAD_LEFT);
-		$this->_page = $page;		
+		$this->_page = $page;
 	}
 
 	public function getYear() {
@@ -50,18 +50,20 @@ class Posts {
 	public function getList() {
 		$files = array();
 		foreach ($this->_getFilesFromPath($this->_year, $this->_mounth, $this->_page) as $file) {
-			$files[] = $this->_createNewPostObject($file);	
+			$files[] = $this->_createNewPostObject($file);
 		}
 		return $files;
 	}
 
-	public function getNext() {		
+	public function getNext() {
 		if ($this->_checkIfPageExists($this->_year, $this->_mounth, $this->_page+1))
 			return new self($this->_year, $this->_mounth, $this->_page+1);
 		$year = $this->_year;
 		$mounth = $this->_getNextElem($this->_year, $this->_mounth);
 		if ($mounth === false) {
 			$year = $this->_getNextElem($this->_year);
+			if ($year === false)
+				return null;
 			$mounth = $this->_getFirstMounth($year);
 		}
 		return new self($year, $mounth, 1);
@@ -74,14 +76,22 @@ class Posts {
 		$mounth = $this->_getPrevElem($this->_year, $this->_mounth);
 		if ($mounth === false) {
 			$year = $this->_getPrevElem($this->_year);
-			$mounth = $this->_getLastMounth($year);			
+			if ($year === false)
+				return null;
+			$mounth = $this->_getLastMounth($year);
 		}
 		$page = $this->_getLastPage($year, $mounth);
 		return new self($year, $mounth, $page);
 	}
 
+	public function equalTo(Posts $posts) {
+		return $posts->getYear() === $this->getYear() &&
+			$posts->getMounth() === $this->getMounth() &&
+			$posts->getPage() === $this->getPage();
+	}
+
 	protected function _checkIfPageExists($year, $mounth, $page) {
-		$files = $this->_filesProvider->listFiles($this->_getPath($year, $mounth));		
+		$files = $this->_filesProvider->listFiles($this->_getPath($year, $mounth));
 		$files = array_slice($files, ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
 		return (bool) !empty($files);
 	}
@@ -94,7 +104,7 @@ class Posts {
 	protected function _getPrevElem($year, $mounth = null) {
 		$items = $this->_filesProvider->listDirs($this->_getPath($mounth == null ? null : $year));
 		$items = array_reverse($items);
-		return $this->_searchElem($items, $year, $mounth);	
+		return $this->_searchElem($items, $year, $mounth);
 	}
 
 	protected function _searchElem($items, $year, $mounth) {
@@ -107,7 +117,7 @@ class Posts {
 		}
 		return false;
 	}
- 
+
 	protected function _getFirstMounth($year) {
 		$mounths = $this->_filesProvider->listDirs($this->_getPath($year));
 		$pathPart = explode('/', $mounths[0]);
@@ -133,7 +143,7 @@ class Posts {
 		return $post;
 	}
 
-	protected function _getFilesFromPath($year, $mounth, $page) {		
+	protected function _getFilesFromPath($year, $mounth, $page) {
 		$files = $this->_filesProvider->listFiles($this->_getPath($year, $mounth));
 		return array_slice($files, ($page-1) * $this->_itemsPerPage, $this->_itemsPerPage);
 	}
@@ -141,11 +151,11 @@ class Posts {
 	protected function _getPath($year = null, $mounth = null) {
 		$path = self::PATH_FOR_POSTS;
 		$path .= ($year !== null) ? '/'.$year : '';
-		$path .= ($mounth !== null) ? '/'.$mounth : '';		
+		$path .= ($mounth !== null) ? '/'.$mounth : '';
 		return $path;
 	}
 
-	protected function _getYearFromPath($path) {		
+	protected function _getYearFromPath($path) {
 		return $this->_getElemFromPath($path, 1);
 	}
 
@@ -154,7 +164,7 @@ class Posts {
 	}
 
 	private function _getElemFromPath($path, $i) {
-		$pathPart = explode('/', $path);		
+		$pathPart = explode('/', $path);
 		return array_key_exists($i, $pathPart) ? $pathPart[$i] : false;
 	}
 

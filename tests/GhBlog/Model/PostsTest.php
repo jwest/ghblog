@@ -9,8 +9,8 @@ class GhBlog_Model_PostsTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(empty($posts));
 	}
 
-	public function testGetPostsList() {		
-		
+	public function testGetPostsList() {
+
 		$obj = new \GhBlog\Model\Posts("2014","07");
 		$posts = $obj->getList();
 		$this->assertTrue($posts[0] instanceof \GhBlog\Model\Post);
@@ -21,11 +21,13 @@ class GhBlog_Model_PostsTest extends PHPUnit_Framework_TestCase {
 
 		$obj = new \GhBlog\Model\Posts("2012","03",1);
 		$obj = $this->_getNext($obj, "2012", "08", 1);
-		$obj = $this->_getNext($obj, "2012", "08", 2);	
+		$obj = $this->_getNext($obj, "2012", "08", 2);
 		$obj = $this->_getNext($obj, "2012", "12", 1);
 		$obj = $this->_getNext($obj, "2014", "02", 1);
 		$obj = $this->_getNext($obj, "2014", "04", 1);
 		$obj = $this->_getNext($obj, "2014", "07", 1);
+		$obj = $this->_getNext($obj, "2014", "10", 1);
+		$this->assertEmpty($obj->getNext());
 	}
 
 	public function testGetPostsPrevList() {
@@ -38,6 +40,19 @@ class GhBlog_Model_PostsTest extends PHPUnit_Framework_TestCase {
 		$obj = $this->_getPrev($obj, "2012", "08", 2);
 		$obj = $this->_getPrev($obj, "2012", "08", 1);
 		$obj = $this->_getPrev($obj, "2012", "03", 1);
+		$this->assertEmpty($obj->getPrev());
+	}
+
+	public function testEqualsObj() {
+		$obj1 = new \GhBlog\Model\Posts("2014","10",1);
+		$obj2 = new \GhBlog\Model\Posts("2014","10",1);
+		$this->assertTrue($obj1->equalTo($obj2));
+	}
+
+	public function testNotEqualsObj() {
+		$obj1 = new \GhBlog\Model\Posts("2014","10",1);
+		$obj2 = new \GhBlog\Model\Posts("2012","08",1);
+		$this->assertFalse($obj1->equalTo($obj2));
 	}
 
 	public function testGetNewPost() {
@@ -47,20 +62,20 @@ class GhBlog_Model_PostsTest extends PHPUnit_Framework_TestCase {
 
 	private function _getNext($obj, $year, $mounth, $page) {
 		$obj = $obj->getNext();
-		$this->_objAssert($obj, $year, $mounth, $page);		
+		$this->_objAssert($obj, $year, $mounth, $page);
 		return $obj;
 	}
 
 	private function _getPrev($obj, $year, $mounth, $page) {
 		$obj = $obj->getPrev();
-		$this->_objAssert($obj, $year, $mounth, $page);		
+		$this->_objAssert($obj, $year, $mounth, $page);
 		return $obj;
 	}
 
 	private function _objAssert($obj, $year, $mounth, $page) {
 		$this->assertEquals($year, $obj->getYear());
 		$this->assertEquals($mounth, $obj->getMounth());
-		$this->assertEquals($page, $obj->getPage());	
+		$this->assertEquals($page, $obj->getPage());
 	}
 
 }

@@ -38,7 +38,7 @@ class Files implements IApi {
 
 	public function listDirs($path = '') {
 		$items = glob($this->_path.'/'.$path.'/*', GLOB_ONLYDIR);
-		natsort($items);		
+		natsort($items);
 		return array_map(array($this, '_removeDefaultPath'), $items);
 	}
 
