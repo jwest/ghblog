@@ -32,6 +32,22 @@ class GhBlog_View_PaginationTest extends PHPUnit_Framework_TestCase {
         $this->_objAssert($obj->getActual(), 2014, 10, 1);
     }
 
+    public function testGetNextUrl() {
+        $obj = new Pagination(new \GhBlog\Model\Posts(2014,07,1));
+        $this->assertEquals('http://local/2014/10', $obj->getNextPageUrl());
+
+        $obj = new Pagination(new \GhBlog\Model\Posts(2012,8,1));
+        $this->assertEquals('http://local/2012/08/2', $obj->getNextPageUrl());
+    }
+
+    public function testGetPrevUrl() {
+        $obj = new Pagination(new \GhBlog\Model\Posts(2014,02,1));
+        $this->assertEquals('http://local/2012/12', $obj->getPrevPageUrl());
+
+        $obj = new Pagination(new \GhBlog\Model\Posts(2012,12,1));
+        $this->assertEquals('http://local/2012/08/2', $obj->getPrevPageUrl());
+    }
+
     private function _getNext($obj, $year, $mounth, $page) {
         $obj = $obj->getNextPage();
         $this->_objAssert($obj, $year, $mounth, $page);

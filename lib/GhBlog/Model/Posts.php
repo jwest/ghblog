@@ -28,15 +28,15 @@ class Posts {
 	}
 
 	public function getYear() {
-		return $this->_year;
+		return (string)$this->_year;
 	}
 
 	public function getMounth() {
-		return $this->_mounth;
+		return (string)$this->_mounth;
 	}
 
 	public function getPage() {
-		return $this->_page;
+		return (int)$this->_page;
 	}
 
 	public function _loadActual() {

@@ -6,7 +6,7 @@ class GhBlog_Model_PostTest extends PHPUnit_Framework_TestCase {
 
 		class_alias('\GhBlog\Model\Post', 'P1');
 
-		$path = '2012/10_06_test_post3.md';
+		$path = '2012/10/06_test_post3.md';
 		$obj = $this->getMock('P1', array('_loadFromApi', '_loadFromFile'));
 		$obj->expects($this->any())
 		    ->method('_loadFromFile')
@@ -20,13 +20,14 @@ class GhBlog_Model_PostTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array('test1', 'test2', 'test3'), $obj->getTags());
 		$this->assertEquals('2012-11-09 10:32:52', $obj->getDate('Y-m-d H:i:s'));
 		$this->assertEquals('<p>test</p>'."\n", $obj->getContent());
+		$this->assertEquals('http://local/2012/10/06_test_post3', $obj->getUrl());
 	}
 
 	public function testGetPost2() {
 
 		class_alias('\GhBlog\Model\Post', 'P2');
 
-		$path = '2012/10_06_test_post3.md';
+		$path = '2012/10/06_test_post3.md';
 		$obj = $this->getMock('P2', array('_loadFromApi', '_loadFromFile'));
 		$obj->expects($this->any())
 		    ->method('_loadFromApi')
@@ -40,6 +41,7 @@ class GhBlog_Model_PostTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array('test1', 'test2', 'test3'), $obj->getTags());
 		$this->assertEquals('2012-11-09 10:32:52', $obj->getDate('Y-m-d H:i:s'));
 		$this->assertEquals('<p>test</p>'."\n", $obj->getContent());
+		$this->assertEquals('http://local/2012/10/06_test_post3', $obj->getUrl());
 	}
 
 }

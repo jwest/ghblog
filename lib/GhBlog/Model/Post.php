@@ -36,6 +36,12 @@ class Post {
 		return $this->_content;
 	}
 
+	public function getUrl() {
+		$pathPart = explode('.', $this->_path);
+		unset($pathPart[count($pathPart)-1]);
+		return Config::app()->get('url') . implode('.', $pathPart);
+	}
+
 	public function loadFromFile($path) {
 		$this->_path = $path;
 		$content = $this->_loadFromFile();
