@@ -30,8 +30,17 @@ $app->get('/(:year(/:mounth(/:page)))', function ($year = null, $mounth = null, 
     ));
 });
 
-$app->get('/post/(:year(/:mounth(/:post)))', function ($year, $mounth, $post) use ($twig) {
-    
+$app->get('/post/(:year(/:mounth(/:postName)))', function ($year, $mounth, $postName) use ($app, $twig) {    
+    try {
+    	$post = new Post();
+    	$post->load($year, $mounth, $postName);  
+		$template = $twig->loadTemplate('post.html');
+	    echo $template->render(array(
+	        'post' => $post
+	    ));
+	} catch(\GhBlog\Api\Exception $e) {
+		$app->notFound();
+	}
 });
 
 $app->post('/hook/'.Config::app()->get('api.hook.hash'), function(){

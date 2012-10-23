@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block title %}Post {{ post.getTitle() }}{% endblock %}
+{% block content %}
+    <div class="post">
+        <h3><a href="{{ post.getUrl()|raw }}">{{ post.getTitle() }}</a></h3>
+        <div>{{ post.getDate() }}</div>
+        <div>{{ post.getContent()|raw }}</div>
+    </div>    
+{% endblock %}

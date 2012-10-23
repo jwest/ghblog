@@ -39,7 +39,12 @@ class Post {
 	public function getUrl() {
 		$pathPart = explode('.', $this->_path);
 		unset($pathPart[count($pathPart)-1]);
-		return Config::app()->get('url') . implode('.', $pathPart);
+		return Config::app()->get('url') . 'post/' . ltrim(implode('.', $pathPart), 'posts/');
+	}
+
+	public function load($year = null, $mounth = null, $postName = null) {
+		if ($year !== null && $mounth !== null && $postName !== null)
+			$this->loadFromFile('posts/'.$year.'/'.$mounth.'/'.$postName.'.md');
 	}
 
 	public function loadFromFile($path) {
@@ -70,11 +75,7 @@ class Post {
 	}
 
 	protected function _loadFromFile() {
-		try {
-			return Api::factory('Files')->getContent($this->_getFilePath());
-		} catch(Api\Exception $e) {
-			return false;
-		}		
+		return Api::factory('Files')->getContent($this->_getFilePath());
 	}
 
 	protected function _loadFromApi() {
