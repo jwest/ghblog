@@ -6,13 +6,7 @@ class Config {
 
 	public static $configPath = '.';
 
-	protected $_config = array(
-		//'api.github' => array(),
-		//'api.files' => array(),
-		'path.template' => '',
-		'path.date' => '',
-		'path.cache' => '',
-	);
+	protected $_config = array();
 
 	protected static $_instances = array();
 
