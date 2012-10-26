@@ -4,7 +4,7 @@ namespace GhBlog\Generator;
 
 use \GhBlog\Model;
 
-class Posts { 
+class Posts {
 
 	protected $_twig;
 	protected $_posts;
@@ -16,7 +16,6 @@ class Posts {
 
 	public function getList() {
 		return $this->_posts;
-		
 	}
 
 	public function generatePage() {
@@ -35,8 +34,12 @@ class Posts {
 
 	}
 
-	public function getPostGenerator() {
-
+	public function getPosts() {
+		$posts = array();
+		foreach ($this->_posts->getList() as $post) {
+			$posts[] = new Post($this->_twig, $post);
+		}
+		return $posts;
 	}
 
 }

@@ -20,7 +20,7 @@ class GhBlog_Generator_PostsTest extends PHPUnit_Framework_TestCase {
 		$obj = new \GhBlog\Generator\Posts($this->_getTwig(), $modelList);
 		$posts = $obj->getPosts();
 		$this->assertTrue($posts[0] instanceof \GhBlog\Generator\Post);
-		
+
 	}
 
 	private function _getTwig() {
