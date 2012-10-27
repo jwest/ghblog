@@ -30,10 +30,6 @@ class Posts {
 	    );
 	}
 
-	public function generatePosts() {
-
-	}
-
 	public function getPosts() {
 		$posts = array();
 		foreach ($this->_posts->getList() as $post) {
